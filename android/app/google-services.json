@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "874313036153",
+    "firebase_url": "https://onepic-ec7f7.firebaseio.com",
+    "project_id": "onepic-ec7f7",
+    "storage_bucket": "onepic-ec7f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874313036153:android:f665938c45909930947fa8",
+        "android_client_info": {
+          "package_name": "io.onepic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874313036153-e4qjvtfj2q75l9invld2f7u4f7l712oc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.onepic",
+            "certificate_hash": "59cbe30a688decbb0d78f485999075e217a69f8f"
+          }
+        },
+        {
+          "client_id": "874313036153-7epi34kbnad9iq5rjrb5chq8ee63iv9t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAlNzqQJrfjm-Fk9yhQ7Ag-1EuLd8uQ0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874313036153-7epi34kbnad9iq5rjrb5chq8ee63iv9t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "874313036153-pgi621nb0dfldbp878vk5old6p3e4vg9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.onepic"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
