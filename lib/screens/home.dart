@@ -4,22 +4,18 @@ import '../services/services.dart';
 import '../shared/shared.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
-  final AuthService auth = AuthService();
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    FirebaseUser user = Provider.of<FirebaseUser>(context);
-
-    if (user != null) {
-      return Scaffold(
-        bottomNavigationBar: AppBottomNav(),
+    return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.deepOrange,
-          title: Text("Home"),
+          title: Text(
+            "Home",
+          ),
+          backgroundColor: Colors.red,
         ),
-      );
-    } else {
-      return Text('not logged in...');
-    }
+        body: Container(
+          color: Colors.white,
+        ));
   }
 }

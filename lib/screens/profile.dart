@@ -12,7 +12,6 @@ class ProfileScreen extends StatelessWidget {
 
     if (user != null) {
       return Scaffold(
-        bottomNavigationBar: AppBottomNav(),
         appBar: AppBar(
           backgroundColor: Colors.deepOrange,
           title: Text(user.displayName),

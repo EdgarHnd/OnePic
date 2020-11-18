@@ -4,7 +4,7 @@ import '../services/services.dart';
 import '../shared/shared.dart';
 import 'package:provider/provider.dart';
 
-class TrendScreen extends StatelessWidget {
+class TrendPage extends StatelessWidget {
   final AuthService auth = AuthService();
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,6 @@ class TrendScreen extends StatelessWidget {
 
     if (user != null) {
       return Scaffold(
-        bottomNavigationBar: AppBottomNav(),
         appBar: AppBar(
           backgroundColor: Colors.deepOrange,
           title: Text("Trending"),
