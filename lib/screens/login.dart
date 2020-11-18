@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:onepic/screens/home.dart';
+import 'package:onepic/screens/profile.dart';
 import '../services/services.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -9,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   AuthService auth = AuthService();
 
-  @override
+  /* @override
   void initState() {
     super.initState();
     auth.getUser.then(
@@ -19,7 +22,7 @@ class LoginScreenState extends State<LoginScreen> {
         }
       },
     );
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -31,15 +34,10 @@ class LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            FlutterLogo(
-              size: 150,
-            ),
             Text(
               'Login to Start',
-              style: Theme.of(context).textTheme.headline,
               textAlign: TextAlign.center,
             ),
-            Text('Your Tagline'),
             LoginButton(
               text: 'LOGIN WITH GOOGLE',
               icon: FontAwesomeIcons.google,
@@ -51,6 +49,15 @@ class LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+Route _createRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => HomePage(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return child;
+    },
+  );
 }
 
 /// A resuable login button for multiple auth methods
@@ -75,7 +82,7 @@ class LoginButton extends StatelessWidget {
         onPressed: () async {
           var user = await loginMethod();
           if (user != null) {
-            Navigator.pushReplacementNamed(context, '/profile');
+            Navigator.of(context).push(_createRoute());
           }
         },
         label: Expanded(
