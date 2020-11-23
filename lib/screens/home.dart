@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:onepic/main.dart';
 import '../services/services.dart';
 import '../shared/shared.dart';
 import 'screens.dart';
@@ -27,35 +29,34 @@ TValue case2<TOptionType, TValue>(
 }
 
 class _HomePageState extends State<HomePage> {
-  int _page = 0;
+  int _page = 1;
   PageController pageController;
 
   @override
   Widget build(BuildContext context) {
-    FirebaseUser user = Provider.of<FirebaseUser>(context);
-    if (user != null) {
+    User user = Provider.of<User>(context);
+    UserModel currentUser = Provider.of<UserModel>(context);
+    if (currentUser != null) {
       return (Scaffold(
         appBar: AppBar(
           leading: Container(),
-          title: Text(
-              case2(_page, {0: "Feed", 1: "Home", 2: "Profile"}, "Home"),
+          title: Text(case2(_page, {0: "Lit", 1: "Feed", 2: "Profile"}, "Feed"),
               style:
                   TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
           backgroundColor: Colors.white,
         ),
         body: PageView(
+          controller: pageController,
           children: [
             Container(
               color: Colors.white,
               child: Center(
-                child: Text("Feed"),
+                child: Text("Lit"),
               ),
             ),
             Container(
               color: Colors.white,
-              child: Center(
-                child: Text("Home"),
-              ),
+              child: Center(child: FeedScreen()),
             ),
             Container(
               color: Colors.white,
@@ -65,8 +66,8 @@ class _HomePageState extends State<HomePage> {
               ,
             ),
           ],
-          controller: pageController,
           scrollDirection: Axis.horizontal,
+          /* physics: AlwaysScrollableScrollPhysics(), */
           /* physics: NeverScrollableScrollPhysics(), */
           onPageChanged: onPageChanged,
         ),
@@ -114,7 +115,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    pageController = PageController();
+    pageController = PageController(initialPage: 1);
   }
 
   @override

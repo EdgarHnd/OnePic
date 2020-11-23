@@ -5,10 +5,9 @@ import '../shared/shared.dart';
 import 'package:provider/provider.dart';
 
 class TrendPage extends StatelessWidget {
-  final AuthService auth = AuthService();
   @override
   Widget build(BuildContext context) {
-    FirebaseUser user = Provider.of<FirebaseUser>(context);
+    User user = Provider.of<User>(context);
 
     if (user != null) {
       return Scaffold(
