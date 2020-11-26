@@ -4,13 +4,16 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_performance/firebase_performance.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'services/services.dart';
 import 'screens/screens.dart';
 import 'shared/shared.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 
 /* FirebaseAnalytics analytics; */
 /* UserModel currentUserModel;
@@ -23,6 +26,9 @@ Future<void> retriveUserData(User user) async {
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  /*  debugPrintGestureArenaDiagnostics = true; */
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   /* Crashlytics.instance.enableInDevMode =
       true; // turn this off after seeing reports in in the console.
   FlutterError.onError = Crashlytics.instance.recordFlutterError; */

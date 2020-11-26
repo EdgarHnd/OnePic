@@ -12,6 +12,7 @@ class Global {
   // Data Models
   static final Map models = {
     UserModel: (data) => UserModel.fromMap(data),
+    OneModel: (data) => OneModel.fromMap(data),
   };
 
   // Firestore References for Writes
@@ -19,4 +20,8 @@ class Global {
       UserData<UserModel>(collection: 'users');
   static final Collection<UserModel> usersRef =
       Collection<UserModel>(path: 'users');
+/*   static final Document<UserModel> otherUserRef =
+      Document<UserModel>(path: 'users'); */
+  static final Collection<OneModel> onesRef =
+      Collection<OneModel>(path: 'ones');
 }

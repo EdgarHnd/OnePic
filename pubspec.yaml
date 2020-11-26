@@ -42,6 +42,10 @@ dependencies:
   # Performance
   firebase_performance: ^0.4.2
 
+  firebase_storage: "^5.1.0"
+  firebase_image: ^0.3.0
+  cached_network_image: ^2.3.3
+
   provider: 4.3.2+2
   rxdart: 0.24.1
   font_awesome_flutter: 8.10.0
@@ -67,7 +71,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-  - meeseek.jpg
+    - assets/images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

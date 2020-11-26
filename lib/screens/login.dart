@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onepic/screens/home.dart';
-import 'package:onepic/screens/profile.dart';
+import 'package:onepic/screens/user_profile.dart';
 import '../services/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:onepic/shared/shared.dart';

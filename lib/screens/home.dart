@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,9 +30,9 @@ TValue case2<TOptionType, TValue>(
 }
 
 class _HomePageState extends State<HomePage> {
-  int _page = 1;
+  int _page;
   PageController pageController;
-
+  PageScrollPhysics pageScrollPhysics;
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<User>(context);
@@ -61,12 +62,15 @@ class _HomePageState extends State<HomePage> {
             Container(
               color: Colors.white,
               child:
-                  ProfileScreen() /* Center(
+                  UserProfileScreen() /* Center(
                 child: Text("Profile"), */
               ,
             ),
           ],
+          allowImplicitScrolling: true,
+          /* dragStartBehavior: DragStartBehavior.down, */
           scrollDirection: Axis.horizontal,
+          physics: pageScrollPhysics,
           /* physics: AlwaysScrollableScrollPhysics(), */
           /* physics: NeverScrollableScrollPhysics(), */
           onPageChanged: onPageChanged,
@@ -115,6 +119,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _page = 1;
     pageController = PageController(initialPage: 1);
   }
 

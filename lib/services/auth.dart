@@ -138,6 +138,7 @@ class FirebaseAuthHelper {
       "one": '',
       "followers": {},
       "following": {},
+      "likes": 0,
     });
   }
 
