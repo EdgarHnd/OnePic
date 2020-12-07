@@ -8,8 +8,7 @@ import 'package:onepic/app/userPage/user_page.dart';
 
 @MaterialAutoRouter(
   routes: <AutoRoute>[
-    MaterialRoute(page: AuthWrapper, initial: true),
-    MaterialRoute(page: HomePage),
+    MaterialRoute(page: HomePage, initial: true),
     MaterialRoute(page: LoginPage),
     MaterialRoute(page: RegisterPage),
     CustomRoute(

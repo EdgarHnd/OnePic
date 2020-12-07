@@ -10,20 +10,17 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../app/authPage/auth_widget.dart';
 import '../app/authPage/login_page.dart';
 import '../app/authPage/register_page.dart';
 import '../app/homePage/home_page.dart';
 import '../app/userPage/user_page.dart';
 
 class Routes {
-  static const String authWrapper = '/';
-  static const String homePage = '/home-page';
+  static const String homePage = '/';
   static const String loginPage = '/login-page';
   static const String registerPage = '/register-page';
   static const String userPage = '/user-page';
   static const all = <String>{
-    authWrapper,
     homePage,
     loginPage,
     registerPage,
@@ -35,7 +32,6 @@ class Router extends RouterBase {
   @override
   List<RouteDef> get routes => _routes;
   final _routes = <RouteDef>[
-    RouteDef(Routes.authWrapper, page: AuthWrapper),
     RouteDef(Routes.homePage, page: HomePage),
     RouteDef(Routes.loginPage, page: LoginPage),
     RouteDef(Routes.registerPage, page: RegisterPage),
@@ -44,12 +40,6 @@ class Router extends RouterBase {
   @override
   Map<Type, AutoRouteFactory> get pagesMap => _pagesMap;
   final _pagesMap = <Type, AutoRouteFactory>{
-    AuthWrapper: (data) {
-      return MaterialPageRoute<dynamic>(
-        builder: (context) => AuthWrapper(),
-        settings: data,
-      );
-    },
     HomePage: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => HomePage(),
