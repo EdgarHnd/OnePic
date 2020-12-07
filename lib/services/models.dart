@@ -6,9 +6,11 @@ class UserModel {
   final String id;
   final String one;
   final String username;
-  final Map followers;
+  final List followers;
+  final List following;
+  final int nbFollowers;
+  final int nbFollowing;
   final int likes;
-  final Map following;
   final Timestamp lastactivity;
 
   const UserModel(
@@ -18,6 +20,8 @@ class UserModel {
       this.email,
       this.followers,
       this.following,
+      this.nbFollowers,
+      this.nbFollowing,
       this.likes,
       this.lastactivity});
 
@@ -27,42 +31,49 @@ class UserModel {
         username: data['username'] ?? '',
         one: data['one'] ?? '',
         id: data['uid'] ?? '',
-        followers: data['followers'] ?? '',
-        following: data['following'] ?? '',
+        followers: data['followers'] ?? [],
+        following: data['following'] ?? [],
+        nbFollowers: data['nbFollowers'] ?? 0,
+        nbFollowing: data['nbFollowing'] ?? 0,
         likes: data['likes'] ?? 0,
-        lastactivity: data['lastActivity'] ?? '');
+        lastactivity: data['lastActivity'] ?? Timestamp.now());
   }
 }
 
 class OneModel {
   final String id;
   final String uid;
+  final String username;
   final String url;
   final String topics;
-  final Map likes;
+  final List likes;
   final int nbLikes;
   final Timestamp datePosted;
   final bool isCurrent;
 
-  const OneModel(
-      {this.id,
-      this.uid,
-      this.url,
-      this.topics,
-      this.likes,
-      this.nbLikes,
-      this.datePosted,
-      this.isCurrent});
+  const OneModel({
+    this.id,
+    this.uid,
+    this.username,
+    this.url,
+    this.topics,
+    this.likes,
+    this.nbLikes,
+    this.datePosted,
+    this.isCurrent,
+  });
 
   factory OneModel.fromMap(Map data) {
     return OneModel(
-        id: data['id'] ?? '',
-        uid: data['uid'] ?? '',
-        url: data['one'] ?? '',
-        topics: data['topics'] ?? '',
-        likes: data['likes'] ?? '',
-        nbLikes: data['nbLikes'] ?? 0,
-        datePosted: data['datePosted'] ?? '',
-        isCurrent: data['isCurrent'] ?? true);
+      id: data['id'] ?? '',
+      uid: data['uid'] ?? '',
+      username: data['username'] ?? '',
+      url: data['one'] ?? '',
+      topics: data['topics'] ?? '',
+      likes: data['likes'] ?? [],
+      nbLikes: data['nbLikes'] ?? 0,
+      datePosted: data['datePosted'] ?? Timestamp.now(),
+      isCurrent: data['isCurrent'] ?? true,
+    );
   }
 }

@@ -44,8 +44,9 @@ class Collection<T> {
   }
 
   Stream<List<T>> streamData() {
-    return ref.snapshots().map(
-        (list) => list.docs.map((doc) => Global.models[T](doc.data()) as T));
+    return ref.snapshots().map((list) => list.docs
+        .map((doc) => Global.models[T](doc.data()) as T)
+        .toList()); //added toList
   }
 }
 

@@ -1,5 +1,6 @@
-import 'services.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:onepic/services/db.dart';
+import 'package:onepic/services/models.dart';
 
 /// Static global state. Immutable services that do not care about build context.
 class Global {

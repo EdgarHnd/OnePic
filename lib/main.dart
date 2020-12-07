@@ -1,28 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_analytics/observer.dart';
-import 'package:firebase_performance/firebase_performance.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'services/services.dart';
-import 'screens/screens.dart';
-import 'shared/shared.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:flutter/services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/gestures.dart';
+import 'package:onepic/app/authPage/login_page.dart';
 
-/* FirebaseAnalytics analytics; */
-/* UserModel currentUserModel;
-final usersCollection = FirebaseFirestore.instance.collection('users');
-
-Future<void> retriveUserData(User user) async {
-  DocumentSnapshot userRecord = await usersCollection.doc(user.uid).get();
-  currentUserModel = UserModel.fromDocument(userRecord);
-} */
+import 'app/authPage/auth_widget.dart';
+import 'app/homePage/home_page.dart';
+import 'routing/router.gr.dart' as routing;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +20,9 @@ void main() {
       true; // turn this off after seeing reports in in the console.
   FlutterError.onError = Crashlytics.instance.recordFlutterError; */
   /* analytics = FirebaseAnalytics(); */
-  runApp(OnePic());
+  runApp(ProviderScope(
+    child: OnePic(),
+  ));
 }
 
 class OnePic extends StatelessWidget {
@@ -57,21 +46,23 @@ class OnePic extends StatelessWidget {
 
           // Once complete, show your application
           if (snapshot.connectionState == ConnectionState.done) {
-            return MultiProvider(
-                providers: [
-                  StreamProvider<UserModel>.value(
-                      value: Global.userDataRef.documentStream),
-                  StreamProvider<User>.value(value: FirebaseAuthHelper().user)
-                ],
-                child: MaterialApp(
-                  title: 'OnePic',
-                  // Firebase Analytics
-                  /* navigatorObservers: [
-                FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
-              ], */
-                  theme: ThemeData(),
-                  home: HomePage(),
-                ));
+            return MaterialApp(
+              theme: ThemeData(),
+              debugShowCheckedModeBanner: false,
+              home: AuthWrapper(
+                nonSignedInBuilder: (_) => LoginPage(),
+                signedInBuilder: (_) => HomePage(),
+              ),
+              onGenerateRoute: routing.Router(),
+              /*  builder: ExtendedNavigator.builder<routing.Router>(
+                router: routing.Router(),
+                // pass anything navigation related to ExtendedNav instead of MaterialApp
+                /* initialRoute: ...
+                   observers:...
+         navigatorKey:...
+         onUnknownRoute:...*/
+              ), */
+            );
 
             // Otherwise, show something whilst waiting for initialization to complete
           }

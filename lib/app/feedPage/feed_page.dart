@@ -1,31 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import '../services/services.dart';
-import '../shared/shared.dart';
-import 'screens.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:onepic/routing/router.gr.dart';
+import 'package:onepic/services/providers.dart';
 
-class FeedScreen extends StatelessWidget {
+class FeedPage extends HookWidget {
   final ScrollController _scrollController = new ScrollController();
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Object>(
-        future: Global.usersRef.getData(),
-        builder: (BuildContext context, AsyncSnapshot snap) {
-          if (snap.hasData) {
-            List<UserModel> users = snap.data;
-            return ListView(controller: _scrollController, children: <Widget>[
-              for (var user in users)
+    return Scaffold(
+      body: Consumer(builder: (context, watch, child) {
+        final onesList = watch(onesProvider);
+        return onesList.when(
+          data: (ones) => ListView(
+            controller: _scrollController,
+            children: <Widget>[
+              for (var one in ones)
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child: Column(
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(upRoute(ProfileScreen(
-                            userProfile: user,
-                          )));
+                          Navigator.of(context).pushNamed(Routes.userPage,
+                              arguments: UserPageArguments(userId: one.uid));
                         },
                         child: Container(
                           child: Column(
@@ -44,11 +42,11 @@ class FeedScreen extends StatelessWidget {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(user.username,
+                                      Text(one.username,
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline),
-                                      Text(user.likes.toString(),
+                                      Text(one.nbLikes.toString(),
                                           style: TextStyle(
                                               color: Colors.redAccent,
                                               fontSize: 20)),
@@ -63,16 +61,12 @@ class FeedScreen extends StatelessWidget {
                     ],
                   ),
                 )
-            ]);
-          } else {
-            return CircularProgressIndicator();
-            /* Container(
-              color: Colors.white,
-              child: Center(
-                child: Text("Nobody here"),
-              ),
-            ); */
-          }
-        });
+            ],
+          ),
+          loading: () => CircularProgressIndicator(),
+          error: (_, __) => Container(),
+        );
+      }),
+    );
   }
 }

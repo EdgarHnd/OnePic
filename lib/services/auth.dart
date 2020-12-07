@@ -1,7 +1,76 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
+
+class FirebaseAuthHelper {
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+  AuthResultStatus _status;
+  Stream<User> get user => _auth.authStateChanges();
+
+  ///
+  /// Helper Functions
+  ///
+  Future<AuthResultStatus> createAccount({username, email, pass}) async {
+    try {
+      UserCredential authResult = await _auth.createUserWithEmailAndPassword(
+          email: email, password: pass);
+      if (authResult.user != null) {
+        addUserToDb(authResult.user, username);
+        updateUserOnSign(authResult.user);
+        _status = AuthResultStatus.successful;
+      } else {
+        _status = AuthResultStatus.undefined;
+      }
+    } catch (e) {
+      print('Exception @createAccount: $e');
+      _status = AuthExceptionHandler.handleException(e);
+    }
+    return _status;
+  }
+
+  Future<AuthResultStatus> login({email, pass}) async {
+    try {
+      final authResult =
+          await _auth.signInWithEmailAndPassword(email: email, password: pass);
+
+      if (authResult.user != null) {
+        updateUserOnSign(authResult.user);
+        _status = AuthResultStatus.successful;
+      } else {
+        _status = AuthResultStatus.undefined;
+      }
+    } catch (e) {
+      print('Exception @createAccount: $e');
+      _status = AuthExceptionHandler.handleException(e);
+    }
+    return _status;
+  }
+
+  Future<void> addUserToDb(User user, username) {
+    DocumentReference usersRef = _db.collection('users').doc(user.uid);
+    return usersRef.set({
+      'uid': user.uid,
+      'username': username,
+      'email': user.email,
+      "one": '',
+      "followers": {},
+      "following": {},
+      "likes": 0,
+    });
+  }
+
+  Future<void> updateUserOnSign(User user) {
+    DocumentReference usersRef = _db.collection('users').doc(user.uid);
+
+    return usersRef.set({'uid': user.uid, 'lastActivity': DateTime.now()},
+        SetOptions(merge: true));
+  }
+
+  logout() {
+    _auth.signOut();
+  }
+}
 
 enum AuthResultStatus {
   successful,
@@ -83,75 +152,3 @@ class AuthExceptionHandler {
     return errorMessage;
   }
 }
-
-class FirebaseAuthHelper {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance;
-  AuthResultStatus _status;
-  Stream<User> get user => _auth.authStateChanges();
-
-  ///
-  /// Helper Functions
-  ///
-  Future<AuthResultStatus> createAccount({username, email, pass}) async {
-    try {
-      UserCredential authResult = await _auth.createUserWithEmailAndPassword(
-          email: email, password: pass);
-      if (authResult.user != null) {
-        addUserToDb(authResult.user, username);
-        updateUserOnSign(authResult.user);
-        _status = AuthResultStatus.successful;
-      } else {
-        _status = AuthResultStatus.undefined;
-      }
-    } catch (e) {
-      print('Exception @createAccount: $e');
-      _status = AuthExceptionHandler.handleException(e);
-    }
-    return _status;
-  }
-
-  Future<AuthResultStatus> login({email, pass}) async {
-    try {
-      final authResult =
-          await _auth.signInWithEmailAndPassword(email: email, password: pass);
-
-      if (authResult.user != null) {
-        updateUserOnSign(authResult.user);
-        _status = AuthResultStatus.successful;
-      } else {
-        _status = AuthResultStatus.undefined;
-      }
-    } catch (e) {
-      print('Exception @createAccount: $e');
-      _status = AuthExceptionHandler.handleException(e);
-    }
-    return _status;
-  }
-
-  Future<void> addUserToDb(User user, username) {
-    DocumentReference usersRef = _db.collection('users').doc(user.uid);
-    return usersRef.set({
-      'uid': user.uid,
-      'username': username,
-      'email': user.email,
-      "one": '',
-      "followers": {},
-      "following": {},
-      "likes": 0,
-    });
-  }
-
-  Future<void> updateUserOnSign(User user) {
-    DocumentReference usersRef = _db.collection('users').doc(user.uid);
-
-    return usersRef.set({'uid': user.uid, 'lastActivity': DateTime.now()},
-        SetOptions(merge: true));
-  }
-
-  logout() {
-    _auth.signOut();
-  }
-}
-
-/// Updates the User's data in Firestore on each new login
