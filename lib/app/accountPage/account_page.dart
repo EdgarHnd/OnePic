@@ -11,7 +11,7 @@ class AccountPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Consumer(builder: (context, watch, child) {
-        final currentUser = watch(userProvider);
+        final currentUser = watch(currentUserProvider);
         return currentUser.when(
           data: (user) => Center(
             child: Column(

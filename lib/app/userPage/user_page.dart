@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:onepic/app/onePage/one_page_model.dart';
 import 'package:onepic/app/userPage/user_page_model.dart';
@@ -7,89 +8,100 @@ import 'package:onepic/services/db.dart';
 import 'package:onepic/services/models.dart';
 import 'package:onepic/services/providers.dart';
 
-class UserPage extends StatelessWidget {
+class UserPage extends HookWidget {
   final userPageModel = UserPageModel();
+
   final String userId;
   UserPage({Key key, @required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Object>(
-        stream: Document<UserModel>(path: 'users/$userId').streamData(),
-        builder: (BuildContext context, AsyncSnapshot user) {
-          if (user.hasData) {
-            UserModel userModel = user.data;
-            return GestureDetector(
-                onVerticalDragUpdate: (details) {
-                  if (details.delta.dy > 0) {
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: Scaffold(
-                  backgroundColor: Colors.white,
-                  body: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        FlatButton(
-                          child: Text(
-                            'follow',
-                            style: TextStyle(color: Colors.white),
+    final userModel = useProvider(userProvider(userId));
+    final currentUid = useProvider(currentUserIdProvider);
+    return userModel.when(
+      data: (user) {
+        if (user != null) {
+          return GestureDetector(
+              onVerticalDragUpdate: (details) {
+                if (details.delta.dy > 0) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Scaffold(
+                backgroundColor: Colors.white,
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Consumer(builder: (context, watch, child) {
+                        final isFollowed = watch(isFollowedProvider(userId));
+                        return isFollowed.when(
+                          data: (follow) => FlatButton(
+                            child: (!follow)
+                                ? Text(
+                                    'follow',
+                                    style: TextStyle(color: Colors.white),
+                                  )
+                                : Text('unfollow',
+                                    style: TextStyle(color: Colors.white)),
+                            color: (!follow) ? Colors.black : Colors.amber,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0)),
+                            onPressed: () {
+                              if (follow) {
+                                userPageModel.unFollow(user.id, currentUid);
+                              } else {
+                                userPageModel.follow(user.id, currentUid);
+                              }
+                            },
                           ),
-                          color: Colors.black,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0)),
-                          onPressed: () {
-                            final currentUid =
-                                context.read(currentUserIdProvider);
-                            if (userModel.followers.contains(currentUid)) {
-                              userPageModel.unFollow(userModel.id, currentUid);
-                            } else {
-                              userPageModel.follow(userModel.id, currentUid);
-                            }
-                          },
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(userModel.username ?? 'username',
-                                style: TextStyle(
-                                    color: Colors.purpleAccent, fontSize: 30)),
-                            Column(
-                              children: [
-                                Text(
-                                    userModel.nbFollowers.toString() +
-                                        ' follows',
-                                    style:
-                                        Theme.of(context).textTheme.headline),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Icon(
-                                      CupertinoIcons.staroflife_fill,
-                                      color: Colors.amber,
-                                    ),
-                                    Text('230',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        UserOne(oneId: userModel.one),
-                      ],
-                    ),
+                          loading: () => FlatButton(
+                            onPressed: () {},
+                            child: Text('loading'),
+                          ),
+                          error: (_, __) => Container(),
+                        );
+                      }),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(user.username ?? 'username',
+                              style: TextStyle(
+                                  color: Colors.purpleAccent, fontSize: 30)),
+                          Column(
+                            children: [
+                              Text(user.nbFollowers.toString() + ' follows',
+                                  style: Theme.of(context).textTheme.headline),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Icon(
+                                    CupertinoIcons.staroflife_fill,
+                                    color: Colors.amber,
+                                  ),
+                                  Text('230',
+                                      style:
+                                          Theme.of(context).textTheme.headline),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      UserOne(oneId: user.one),
+                    ],
                   ),
-                ));
-          } else {
-            return Container();
-          }
-        });
+                ),
+              ));
+        } else {
+          return Container(child: Text('User does not exist'));
+        }
+      },
+      loading: () => CircularProgressIndicator(),
+      error: (_, __) => Container(),
+    );
   }
 }
 
@@ -111,12 +123,22 @@ class UserOne extends StatelessWidget {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Container(
-                        child: Image(
-                            image: AssetImage('assets/images/kanye.jpg')))),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: GestureDetector(
+                  onLongPress: () {
+                    final liked = context.read(currentUserIdProvider);
+                    if (userOne.likes.contains(liked)) {
+                      onePageModel.unLike(userOne.id, liked);
+                    } else {
+                      onePageModel.like(userOne.id, liked);
+                    }
+                  },
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Container(
+                          child: Image(
+                              image: AssetImage('assets/images/kanye.jpg')))),
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -129,19 +151,6 @@ class UserOne extends StatelessWidget {
                   Text(userOne.nbLikes.toString(),
                       style: TextStyle(color: Colors.redAccent, fontSize: 40)),
                 ],
-              ),
-              IconButton(
-                icon: Icon(CupertinoIcons.flame_fill),
-                iconSize: 50,
-                color: Colors.amberAccent,
-                onPressed: () {
-                  final liked = context.read(currentUserIdProvider);
-                  if (userOne.likes.contains(liked)) {
-                    onePageModel.unLike(userOne.id, liked);
-                  } else {
-                    onePageModel.like(userOne.id, liked);
-                  }
-                },
               ),
             ],
           );
