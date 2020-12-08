@@ -134,10 +134,18 @@ class UserOne extends StatelessWidget {
                     }
                   },
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                          child: Image(
-                              image: AssetImage('assets/images/kanye.jpg')))),
+                    borderRadius: BorderRadius.circular(30),
+                    child: Consumer(
+                      builder: (context, watch, child) {
+                        final imgUrl = watch(imgUrlProvider(oneId + '.jpg'));
+                        return imgUrl.when(
+                          data: (url) => Image.network(url),
+                          loading: () => CircularProgressIndicator(),
+                          error: (_, __) => Container(),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
               Row(

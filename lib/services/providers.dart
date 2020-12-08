@@ -5,6 +5,7 @@ import 'package:onepic/services/db.dart';
 import 'package:onepic/services/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:onepic/services/models.dart';
+import 'package:onepic/services/storage.dart';
 
 final greetingProvider = Provider((ref) => 'Hello World!');
 
@@ -45,4 +46,8 @@ final isLikedProvider = FutureProvider.family<bool, String>((ref, id) async {
   } else {
     return false;
   }
+});
+
+final imgUrlProvider = FutureProvider.family<String, String>((ref, img) async {
+  return FireStorageService().loadImage(img);
 });

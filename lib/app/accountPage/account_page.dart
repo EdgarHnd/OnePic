@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:onepic/app/accountPage/image_capture_page.dart';
 import 'package:onepic/services/auth.dart';
 import 'package:onepic/services/providers.dart';
 
@@ -37,6 +37,8 @@ class AccountPage extends StatelessWidget {
                             color: Colors.purpleAccent, fontSize: 30)),
                     Column(
                       children: [
+                        Text(user.nbFollowing.toString() + ' following',
+                            style: Theme.of(context).textTheme.headline),
                         Text(user.followers.length.toString() + ' follows',
                             style: Theme.of(context).textTheme.headline),
                         Row(
@@ -55,30 +57,23 @@ class AccountPage extends StatelessWidget {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Container(
-                          child: FutureBuilder(
-                        future: _getImage(context, 'antoine.jpg'),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            return Container(
-                              child: snapshot.data,
-                            );
-                          }
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Container(
-                              width: 330,
-                              height: 330,
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          return Container();
+                    borderRadius: BorderRadius.circular(30),
+                    child: Container(
+                      child: Consumer(
+                        builder: (context, watch, child) {
+                          final imgUrl =
+                              watch(imgUrlProvider(user.one + '.jpg'));
+                          return imgUrl.when(
+                            data: (url) => Image.network(url),
+                            loading: () => CircularProgressIndicator(),
+                            error: (_, __) => Container(),
+                          );
                         },
-                      ))),
+                      ),
+                    ),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -97,7 +92,9 @@ class AccountPage extends StatelessWidget {
                     icon: Icon(CupertinoIcons.refresh),
                     iconSize: 50,
                     color: Colors.purpleAccent,
-                    onPressed: () {}),
+                    onPressed: () {
+                      _showPhotoDialog(context);
+                    }),
               ],
             ),
           ),
@@ -108,7 +105,52 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  Future<Widget> _getImage(BuildContext context, String imageName) async {
+  _showPhotoDialog(context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Reset Photo',
+              style: TextStyle(color: Colors.black),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                    'Once you reset your photo it will be deleted forever ! Are you sure ?'),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        child: Text(
+                          'No',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      TextButton(
+                        child: Text('Yes'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ImageCapture()));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  /* Future<Widget> _getImage(BuildContext context, String imageName) async {
     /* CachedNetwork */ Image image;
     await FireStorageService.loadImage(context, imageName).then((value) {
       /* image = CachedNetworkImage(imageUrl: value.toString()); */
@@ -119,14 +161,5 @@ class AccountPage extends StatelessWidget {
     });
     return image;
   }
-}
-
-class FireStorageService extends ChangeNotifier {
-  FireStorageService();
-  static Future<dynamic> loadImage(BuildContext context, String image) async {
-    return await FirebaseStorage.instance
-        .ref('users_pics')
-        .child(image)
-        .getDownloadURL();
-  }
+} */
 }

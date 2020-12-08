@@ -42,9 +42,19 @@ class FeedPage extends HookWidget {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(30.0),
                                 child: Container(
-                                    child: Image(
-                                        image: AssetImage(
-                                            'assets/images/kanye.jpg'))),
+                                  child: Consumer(
+                                    builder: (context, watch, child) {
+                                      final imgUrl = watch(
+                                          imgUrlProvider(one.id + '.jpg'));
+                                      return imgUrl.when(
+                                        data: (url) => Image.network(url),
+                                        loading: () =>
+                                            CircularProgressIndicator(),
+                                        error: (_, __) => Container(),
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
                               Container(
                                 child: Padding(
