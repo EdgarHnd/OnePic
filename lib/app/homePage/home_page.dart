@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:onepic/app/accountPage/account_page.dart';
 import 'package:onepic/app/feedPage/feed_page.dart';
 import 'package:onepic/app/homePage/bottom_nav.dart';
 import 'package:onepic/app/trends_page/trends_page.dart';
+import 'package:onepic/services/global.dart';
 import 'navigation_state.dart';
 
 class HomePage extends HookWidget {
@@ -13,7 +15,6 @@ class HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final pageModel = useProvider(navigationStateProvider.state);
     final currentPage = useState(1);
-
     /* Widget body;
     switch (pageModel.page) {
       case NavigationBarEvent.Trends:
@@ -51,9 +52,7 @@ class HomePage extends HookWidget {
           ],
           title: Padding(
             padding: EdgeInsets.only(left: 20.0),
-            child: Text("OneLit",
-                style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold)),
+            child: Hero(tag: 'logo', child: LogoText()),
           ),
           backgroundColor: Colors.white,
         ),
@@ -62,5 +61,47 @@ class HomePage extends HookWidget {
           children: [TrendsPage(), FeedPage(), AccountPage()],
         ),
         bottomNavigationBar: BottomNav());
+  }
+}
+
+class LogoText extends StatelessWidget {
+  final logoFont = GoogleFonts.bungee().fontFamily;
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(children: <TextSpan>[
+        TextSpan(
+          text: 'O',
+          style: TextStyle(
+              color: AppColors.purple, fontFamily: logoFont, fontSize: 30),
+        ),
+        TextSpan(
+          text: 'N',
+          style: TextStyle(
+              color: AppColors.purple, fontFamily: logoFont, fontSize: 30),
+        ),
+        TextSpan(
+          text: 'E',
+          style: TextStyle(
+              color: AppColors.rose, fontFamily: logoFont, fontSize: 30),
+        ),
+        TextSpan(
+          text: 'L',
+          style: TextStyle(
+              color: AppColors.pink, fontFamily: logoFont, fontSize: 30),
+        ),
+        TextSpan(
+          text: 'I',
+          style: TextStyle(
+              color: AppColors.red, fontFamily: logoFont, fontSize: 30),
+        ),
+        TextSpan(
+          text: 'T',
+          style: TextStyle(
+              color: AppColors.yellow, fontFamily: logoFont, fontSize: 30),
+        ),
+      ]),
+    );
   }
 }

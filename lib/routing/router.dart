@@ -11,8 +11,12 @@ import 'package:onepic/app/userPage/user_page.dart';
     MaterialRoute(page: HomePage, initial: true),
     MaterialRoute(page: LoginPage),
     MaterialRoute(page: RegisterPage),
+    /*   MaterialRoute(page: UserPage), */
     CustomRoute(
-        page: UserPage, transitionsBuilder: TransitionsBuilders.slideBottom)
+      page: UserPage,
+      transitionsBuilder: TransitionsBuilders.fadeIn,
+      /* durationInMilliseconds: 1000 */
+    )
   ],
 )
 class $Router {}

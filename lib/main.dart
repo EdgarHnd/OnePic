@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter/services.dart';
 import 'package:onepic/app/authPage/login_page.dart';
+import 'package:onepic/services/global.dart';
 
 import 'app/authPage/auth_widget.dart';
 import 'app/homePage/home_page.dart';
@@ -47,7 +49,36 @@ class OnePic extends StatelessWidget {
           // Once complete, show your application
           if (snapshot.connectionState == ConnectionState.done) {
             return MaterialApp(
-              theme: ThemeData(),
+              theme: ThemeData(
+                accentColor: AppColors.orange,
+                fontFamily: GoogleFonts.ptMono().fontFamily,
+                textTheme: TextTheme(
+                  headline1: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.purple),
+                  headline2: TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                  headline3: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.orange),
+                  bodyText1: TextStyle(
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                  bodyText2: TextStyle(
+                      fontSize: 40.0,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.red),
+                  headline4: TextStyle(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.red),
+                ),
+              ),
               debugShowCheckedModeBanner: false,
               home: AuthWrapper(
                 nonSignedInBuilder: (_) => LoginPage(),

@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/material.dart';
 import 'package:onepic/services/db.dart';
 import 'package:onepic/services/models.dart';
 
@@ -25,4 +26,13 @@ class Global {
       Document<UserModel>(path: 'users'); */
   static final Collection<OneModel> onesRef =
       Collection<OneModel>(path: 'ones');
+}
+
+class AppColors {
+  static const Color purple = Color.fromRGBO(131, 94, 253, 1);
+  static const Color rose = Color.fromRGBO(241, 94, 253, 1);
+  static const Color pink = Color.fromRGBO(253, 94, 149, 1);
+  static const Color red = Color.fromRGBO(253, 94, 94, 1);
+  static const Color orange = Color.fromRGBO(247, 171, 95, 1);
+  static const Color yellow = Color.fromRGBO(247, 206, 95, 1);
 }

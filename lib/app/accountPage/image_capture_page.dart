@@ -1,9 +1,14 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
-import 'image_uploader.dart';
+import 'package:onepic/routing/router.gr.dart';
+import 'package:onepic/services/create_one.dart';
+import 'package:onepic/services/global.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:onepic/services/storage.dart';
 
 class ImageCapture extends StatefulWidget {
   createState() => _ImageCaptureState();
@@ -13,7 +18,9 @@ class _ImageCaptureState extends State<ImageCapture> {
   /// Active image file
   File _finalImage;
   File _originalImage;
+
   final picker = ImagePicker();
+  final oneCreator = OneCreator();
 
   Future<void> _cropImage() async {
     File cropped = await ImageCropper.cropImage(
@@ -69,6 +76,7 @@ class _ImageCaptureState extends State<ImageCapture> {
 
   @override
   Widget build(BuildContext context) {
+    CloudStorageService storage = CloudStorageService();
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -87,8 +95,19 @@ class _ImageCaptureState extends State<ImageCapture> {
             child: TextButton(
               child: Text(
                 'Save',
+                style: TextStyle(color: AppColors.purple),
               ),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () async {
+                _showUploadDialog(context);
+                var newId = await oneCreator.addOneToDb(context);
+                CloudStorageResult storageResult = await storage.uploadImage(
+                    imageToUpload: _finalImage, id: newId);
+                await oneCreator.setUrl(newId, storageResult.imageUrl);
+                var count = 0;
+                Navigator.popUntil(context, (route) {
+                  return count++ == 2;
+                });
+              },
             ),
           ),
         ],
@@ -125,11 +144,6 @@ class _ImageCaptureState extends State<ImageCapture> {
                   iconSize: 40,
                   onPressed: _cropImage,
                 ),
-          _finalImage == null
-              ? Container()
-              : Uploader(
-                  file: _finalImage,
-                ),
         ],
       ),
       floatingActionButton: Row(
@@ -145,6 +159,33 @@ class _ImageCaptureState extends State<ImageCapture> {
           ),
         ],
       ),
+    );
+  }
+
+  _showUploadDialog(context) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return new WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            title: Text(
+              'Uploading',
+              style: Theme.of(context).textTheme.headline1,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Wait mate..'),
+                CircularProgressIndicator(
+                  backgroundColor: AppColors.purple,
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

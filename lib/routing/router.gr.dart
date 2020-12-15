@@ -66,7 +66,7 @@ class Router extends RouterBase {
           userId: args.userId,
         ),
         settings: data,
-        transitionsBuilder: TransitionsBuilders.slideBottom,
+        transitionsBuilder: TransitionsBuilders.fadeIn,
       );
     },
   };

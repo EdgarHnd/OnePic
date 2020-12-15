@@ -43,8 +43,8 @@ class UserModel {
 class OneModel {
   final String id;
   final String uid;
-  final String username;
   final String url;
+  final String username;
   final String topics;
   final List likes;
   final int nbLikes;
@@ -54,8 +54,8 @@ class OneModel {
   const OneModel({
     this.id,
     this.uid,
-    this.username,
     this.url,
+    this.username,
     this.topics,
     this.likes,
     this.nbLikes,
@@ -67,8 +67,8 @@ class OneModel {
     return OneModel(
       id: data['id'] ?? '',
       uid: data['uid'] ?? '',
+      url: data['url'] ?? '',
       username: data['username'] ?? '',
-      url: data['one'] ?? '',
       topics: data['topics'] ?? '',
       likes: data['likes'] ?? [],
       nbLikes: data['nbLikes'] ?? 0,
