@@ -47,16 +47,26 @@ class FirebaseAuthHelper {
     return _status;
   }
 
-  Future<void> addUserToDb(User user, username) {
+  Future<void> addUserToDb(User user, username) async {
+    CollectionReference onesRef = _db.collection('ones');
+    var newId;
+    await onesRef.add({
+      'uid': user.uid,
+      'username': username,
+      "likes": [],
+      "nbLikes": 0,
+      "datePosted": Timestamp.now(),
+      "isCurrent": true,
+    }).then((value) {
+      newId = value.id;
+      value.update({'id': value.id});
+    });
     DocumentReference usersRef = _db.collection('users').doc(user.uid);
     return usersRef.set({
       'uid': user.uid,
       'username': username,
       'email': user.email,
-      "one": '',
-      "followers": {},
-      "following": {},
-      "likes": 0,
+      "one": newId,
     });
   }
 

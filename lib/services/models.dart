@@ -67,7 +67,8 @@ class OneModel {
     return OneModel(
       id: data['id'] ?? '',
       uid: data['uid'] ?? '',
-      url: data['url'] ?? '',
+      url: data['url'] ??
+          'https://firebasestorage.googleapis.com/v0/b/onepic-ec7f7.appspot.com/o/users_pics%2F35LLKYK5SgwVBGfC8wFM.jpg?alt=media&token=38b3e07e-a988-4641-849a-e048cbceb8f8',
       username: data['username'] ?? '',
       topics: data['topics'] ?? '',
       likes: data['likes'] ?? [],

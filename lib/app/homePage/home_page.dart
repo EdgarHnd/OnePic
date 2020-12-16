@@ -50,7 +50,7 @@ class HomePage extends HookWidget {
               ),
             )
           ],
-          title: LogoText(),
+          title: Hero(tag: 'logo', child: LogoText()),
           backgroundColor: Colors.white,
         ),
         body: IndexedStack(

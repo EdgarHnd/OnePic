@@ -129,6 +129,7 @@ class RegisterPageState extends State<RegisterPage> {
     final status = await FirebaseAuthHelper()
         .createAccount(username: username, email: email, pass: password);
     if (status == AuthResultStatus.successful) {
+      Navigator.of(context).pushNamed('/');
     } else {
       final errorMsg = AuthExceptionHandler.generateExceptionMessage(status);
       _showAlertDialog(errorMsg);

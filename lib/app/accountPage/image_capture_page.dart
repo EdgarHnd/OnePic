@@ -48,21 +48,19 @@ class _ImageCaptureState extends State<ImageCapture> {
   Future<void> _getImage(ImageSource source) async {
     final pickedFile = await picker.getImage(source: source);
     final cropped = await ImageCropper.cropImage(
-        sourcePath: pickedFile.path,
-        aspectRatioPresets: [CropAspectRatioPreset.square],
-        androidUiSettings: AndroidUiSettings(
-          showCropGrid: false,
-          toolbarColor: Colors.black,
-          toolbarWidgetColor: Colors.white,
-          hideBottomControls: false,
-          statusBarColor: Colors.black,
-          cropFrameColor: Colors.black,
-          activeControlsWidgetColor: Colors.pink,
-          backgroundColor: Colors.black,
-        ),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
+      sourcePath: pickedFile.path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      androidUiSettings: AndroidUiSettings(
+        showCropGrid: false,
+        toolbarColor: Colors.black,
+        toolbarWidgetColor: Colors.white,
+        hideBottomControls: false,
+        statusBarColor: Colors.black,
+        cropFrameColor: Colors.black,
+        activeControlsWidgetColor: Colors.pink,
+        backgroundColor: Colors.black,
+      ),
+    );
 
     setState(() {
       if (cropped != null) {
