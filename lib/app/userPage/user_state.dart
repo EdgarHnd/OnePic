@@ -1,4 +1,4 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+/* import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final userStateProvider = StateNotifierProvider((ref) => UserStateNotifier());
 
@@ -22,3 +22,4 @@ class FollowModel {
   const FollowModel(this.event);
   final FollowEvent event;
 }
+ */

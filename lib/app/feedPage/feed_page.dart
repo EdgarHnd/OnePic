@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route_annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,6 +15,7 @@ class FeedPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Consumer(builder: (context, watch, child) {
         final onesList = watch(allCurrentOnesProvider);
         return onesList.when(
@@ -30,7 +30,8 @@ class FeedPage extends HookWidget {
                     children: [
                       GestureDetector(
                         onLongPress: () {
-                          final liked = context.read(currentUserIdProvider);
+                          final liked =
+                              context.read(currentUserProvider).data.value.id;
                           if (one.likes.contains(liked)) {
                             onePageModel.unLike(one.id, liked);
                           } else {
@@ -47,6 +48,7 @@ class FeedPage extends HookWidget {
                           child: Column(
                             children: [
                               Hero(
+                                transitionOnUserGestures: true,
                                 tag: one.id,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(30.0),
@@ -68,14 +70,12 @@ class FeedPage extends HookWidget {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
+                                      Text(one.username,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1),
                                       Hero(
-                                        tag: one.uid,
-                                        child: Text(one.username,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1),
-                                      ),
-                                      Hero(
+                                        transitionOnUserGestures: true,
                                         tag: 'like${one.uid}',
                                         child: Row(
                                           children: [

@@ -6,9 +6,7 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:onepic/app/homePage/home_page.dart';
 import 'package:onepic/app/onePage/one_page_model.dart';
 import 'package:onepic/app/userPage/user_page_model.dart';
-import 'package:onepic/services/db.dart';
 import 'package:onepic/services/global.dart';
-import 'package:onepic/services/models.dart';
 import 'package:onepic/services/providers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -21,7 +19,7 @@ class UserPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final userModel = useProvider(userProvider(userId));
-    final currentUid = useProvider(currentUserIdProvider);
+    final currentUid = useProvider(currentUserProvider);
     final onePageModel = OnePageModel();
     return userModel.when(
       data: (user) {
@@ -33,11 +31,11 @@ class UserPage extends HookWidget {
                 }
               },
               child: Scaffold(
-                /* appBar: AppBar(
+                appBar: AppBar(
                   centerTitle: true,
-                  title: Hero(tag: 'logo', child: LogoText()),
+                  title: LogoText(),
                   backgroundColor: Colors.white,
-                ), */
+                ),
                 backgroundColor: Colors.white,
                 body: Center(
                   child: Column(
@@ -49,43 +47,42 @@ class UserPage extends HookWidget {
                           height: 30,
                         ),
                       ),
-                      Consumer(builder: (context, watch, child) {
-                        final isFollowed = watch(isFollowedProvider(userId));
-                        return isFollowed.when(
-                          data: (follow) => FlatButton(
-                            child: (!follow)
-                                ? Text(
-                                    'follow',
-                                    style: TextStyle(color: Colors.white),
-                                  )
-                                : Text('unfollow',
-                                    style: TextStyle(color: Colors.white)),
-                            color: (!follow) ? Colors.black : AppColors.orange,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0)),
-                            onPressed: () {
-                              if (follow) {
-                                userPageModel.unFollow(user.id, currentUid);
-                              } else {
-                                userPageModel.follow(user.id, currentUid);
-                              }
-                            },
-                          ),
-                          loading: () => FlatButton(
-                            onPressed: () {},
-                            child: Text('loading'),
-                          ),
-                          error: (_, __) => Container(),
-                        );
-                      }),
+                      (user.followers.contains(currentUid.data.value.id))
+                          ? FlatButton(
+                              child: Text('unfollow',
+                                  style: Theme.of(context).textTheme.headline5),
+                              color: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0)),
+                              onPressed: () {
+                                userPageModel.unFollow(
+                                    user.id, currentUid.data.value.id);
+                              },
+                            )
+                          : OutlineButton(
+                              child: Text('follow',
+                                  style: Theme.of(context).textTheme.headline2),
+                              color: Colors.black,
+                              focusColor: AppColors.orange,
+                              highlightedBorderColor: Colors.black,
+                              borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 3,
+                                  style: BorderStyle.solid),
+                              splashColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ),
+                              onPressed: () {
+                                userPageModel.follow(
+                                    user.id, currentUid.data.value.id);
+                              },
+                            ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Hero(
-                            tag: userId,
-                            child: Text(user.username ?? 'username',
-                                style: Theme.of(context).textTheme.headline1),
-                          ),
+                          Text(user.username ?? 'username',
+                              style: Theme.of(context).textTheme.headline1),
                           Column(
                             children: [
                               Text(user.nbFollowers.toString() + ' follows',
@@ -116,71 +113,75 @@ class UserPage extends HookWidget {
                           ),
                         ],
                       ),
-                      /*  UserOne(oneId: user.one) */ Consumer(
+                      Consumer(
                         builder: (context, watch, child) {
-                          final userOne = watch(userOnesProvider(userId));
+                          final userOne = watch(oneProvider(user.one));
                           return userOne.when(
-                              data: (one) => Column(
+                            data: (one) => Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 20, bottom: 10),
+                                  child: GestureDetector(
+                                    onLongPress: () {
+                                      final liked = context
+                                          .read(currentUserProvider)
+                                          .data
+                                          .value
+                                          .id;
+                                      if (one.likes.contains(liked)) {
+                                        onePageModel.unLike(one.id, liked);
+                                      } else {
+                                        onePageModel.like(one.id, liked);
+                                      }
+                                    },
+                                    child: Hero(
+                                      transitionOnUserGestures: true,
+                                      tag: one.id,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(30),
+                                        child: CachedNetworkImage(
+                                          imageUrl: one.url,
+                                          placeholder: (context, url) =>
+                                              CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Hero(
+                                  transitionOnUserGestures: true,
+                                  tag: 'like$userId',
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 20, right: 20, bottom: 10),
-                                        child: GestureDetector(
-                                          onLongPress: () {
-                                            final liked = context
-                                                .read(currentUserIdProvider);
-                                            if (one.likes.contains(liked)) {
-                                              onePageModel.unLike(
-                                                  one.id, liked);
-                                            } else {
-                                              onePageModel.like(one.id, liked);
-                                            }
-                                          },
-                                          child: Hero(
-                                            tag: one.id,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              child: CachedNetworkImage(
-                                                imageUrl: one.url,
-                                                placeholder: (context, url) =>
-                                                    CircularProgressIndicator(),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Icon(Icons.error),
-                                              ),
-                                            ),
-                                          ),
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: Icon(
+                                          FontAwesomeIcons.hotjar,
+                                          color: AppColors.red,
+                                          size: 35,
                                         ),
                                       ),
-                                      Hero(
-                                        tag: 'like$userId',
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 8.0),
-                                              child: Icon(
-                                                FontAwesomeIcons.hotjar,
-                                                color: AppColors.red,
-                                                size: 35,
-                                              ),
-                                            ),
-                                            Text(one.nbLikes.toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2),
-                                          ],
-                                        ),
-                                      ),
+                                      Text(one.nbLikes.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2),
                                     ],
                                   ),
-                              loading: () => CircularProgressIndicator(),
-                              error: (e, __) => Container(
-                                    child: Text(e.toString()),
-                                  ));
+                                ),
+                              ],
+                            ),
+                            loading: () => CircularProgressIndicator(),
+                            error: (e, __) => Container(
+                              child: Text(e.toString()),
+                            ),
+                          );
                         },
                       ),
                       Container(
@@ -201,80 +202,3 @@ class UserPage extends HookWidget {
     );
   }
 }
-/* 
-class UserOne extends StatelessWidget {
-  UserOne({
-    Key key,
-    @required this.oneId,
-  }) : super(key: key);
-
-  final String oneId;
-  final onePageModel = OnePageModel();
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: Document<OneModel>(path: 'ones/' + oneId).streamData(),
-      builder: (BuildContext context, AsyncSnapshot one) {
-        if (one.hasData) {
-          OneModel userOne = one.data;
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                child: GestureDetector(
-                  onLongPress: () {
-                    final liked = context.read(currentUserIdProvider);
-                    if (userOne.likes.contains(liked)) {
-                      onePageModel.unLike(userOne.id, liked);
-                    } else {
-                      onePageModel.like(userOne.id, liked);
-                    }
-                  },
-                  child: Hero(
-                    tag: userOne.id,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Consumer(
-                        builder: (context, watch, child) {
-                          final imgUrl = watch(imgUrlProvider(oneId));
-                          return imgUrl.when(
-                            data: (url) => Image.network(url),
-                            loading: () => CircularProgressIndicator(),
-                            error: (e, __) => Container(
-                              child: Text(e.toString()),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Hero(
-                tag: 'like$oneId',
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Icon(
-                        FontAwesomeIcons.hotjar,
-                        color: AppColors.red,
-                        size: 35,
-                      ),
-                    ),
-                    Text(userOne.nbLikes.toString(),
-                        style: Theme.of(context).textTheme.bodyText2),
-                  ],
-                ),
-              ),
-            ],
-          );
-        } else {
-          return Container();
-        }
-      },
-    );
-  }
-}
- */

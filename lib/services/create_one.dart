@@ -9,7 +9,7 @@ class OneCreator {
 
   Future<String> addOneToDb(BuildContext context) async {
     CollectionReference onesRef = _db.collection('ones');
-    UserModel user = context.read(currentUserModelProvider);
+    UserModel user = context.read(currentUserProvider).data.value;
     String oldOne = context.read(currentUserOneIdProvider);
     String newId;
 
@@ -31,7 +31,7 @@ class OneCreator {
   }
 
   Future<void> updateUserOne(BuildContext context, String id) async {
-    String currentUid = await context.read(currentUserIdProvider);
+    String currentUid = context.read(currentUserProvider).data.value.id;
     DocumentReference userRef = _db.collection('users').doc(currentUid);
     return await userRef.update({'one': id});
   }

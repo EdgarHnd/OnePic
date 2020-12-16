@@ -40,7 +40,7 @@ class HomePage extends HookWidget {
     }
     return Scaffold(
         appBar: AppBar(
-          centerTitle: false,
+          centerTitle: true,
           actions: [
             Padding(
               padding: EdgeInsets.only(right: 20.0),
@@ -50,17 +50,14 @@ class HomePage extends HookWidget {
               ),
             )
           ],
-          title: Padding(
-            padding: EdgeInsets.only(left: 20.0),
-            child: Hero(tag: 'logo', child: LogoText()),
-          ),
+          title: LogoText(),
           backgroundColor: Colors.white,
         ),
         body: IndexedStack(
           index: currentPage.value,
           children: [TrendsPage(), FeedPage(), AccountPage()],
         ),
-        bottomNavigationBar: BottomNav());
+        bottomNavigationBar: SizedBox(height: 65, child: BottomNav()));
   }
 }
 
@@ -79,22 +76,22 @@ class LogoText extends StatelessWidget {
         TextSpan(
           text: 'N',
           style: TextStyle(
-              color: AppColors.purple, fontFamily: logoFont, fontSize: 30),
+              color: AppColors.rose, fontFamily: logoFont, fontSize: 30),
         ),
         TextSpan(
           text: 'E',
           style: TextStyle(
-              color: AppColors.rose, fontFamily: logoFont, fontSize: 30),
+              color: AppColors.pink, fontFamily: logoFont, fontSize: 30),
         ),
         TextSpan(
           text: 'L',
           style: TextStyle(
-              color: AppColors.pink, fontFamily: logoFont, fontSize: 30),
+              color: AppColors.red, fontFamily: logoFont, fontSize: 30),
         ),
         TextSpan(
           text: 'I',
           style: TextStyle(
-              color: AppColors.red, fontFamily: logoFont, fontSize: 30),
+              color: AppColors.orange, fontFamily: logoFont, fontSize: 30),
         ),
         TextSpan(
           text: 'T',
