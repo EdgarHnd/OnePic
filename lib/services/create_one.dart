@@ -33,7 +33,7 @@ class OneCreator {
   Future<void> updateUserOne(BuildContext context, String id) async {
     String currentUid = context.read(currentUserProvider).data.value.id;
     DocumentReference userRef = _db.collection('users').doc(currentUid);
-    return await userRef.update({'one': id});
+    return await userRef.update({'one': id, 'lastPosted': Timestamp.now()});
   }
 
   Future<void> setUrl(String id, String url) async {

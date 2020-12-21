@@ -75,7 +75,8 @@ class AccountPage extends StatelessWidget {
                   return currentUserOne.when(
                     data: (one) => Column(children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 10),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(30),
                           child: Container(

@@ -64,6 +64,7 @@ class Router extends RouterBase {
         pageBuilder: (context, animation, secondaryAnimation) => UserPage(
           key: args.key,
           userId: args.userId,
+          oneUrl: args.oneUrl,
         ),
         settings: data,
         transitionsBuilder: TransitionsBuilders.fadeIn,
@@ -80,5 +81,6 @@ class Router extends RouterBase {
 class UserPageArguments {
   final Key key;
   final String userId;
-  UserPageArguments({this.key, @required this.userId});
+  final String oneUrl;
+  UserPageArguments({this.key, @required this.userId, @required this.oneUrl});
 }

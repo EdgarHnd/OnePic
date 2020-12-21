@@ -50,7 +50,7 @@ class OnePic extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done) {
             return MaterialApp(
               theme: ThemeData(
-                accentColor: AppColors.orange,
+                accentColor: AppColors.purple,
                 fontFamily: GoogleFonts.ptMono().fontFamily,
                 textTheme: TextTheme(
                   headline1: TextStyle(

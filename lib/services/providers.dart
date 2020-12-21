@@ -26,6 +26,10 @@ final allCurrentOnesProvider = StreamProvider<List<OneModel>>((ref) {
   return CurrentOnesCollection<OneModel>(path: 'ones').streamData();
 });
 
+final followingUsersProvider = StreamProvider<List<UserModel>>((ref) {
+  return FollowingUsersCollection<UserModel>(path: 'users').streamData();
+});
+
 final currentUserOneProvider = StreamProvider<OneModel>((ref) {
   final currentModel = ref.watch(currentUserProvider).data.value;
   return Document<OneModel>(path: 'ones/${currentModel.one}').streamData();

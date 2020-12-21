@@ -11,6 +11,7 @@ class UserModel {
   final int nbFollowers;
   final int nbFollowing;
   final int likes;
+  final Timestamp lastPosted;
   final Timestamp lastactivity;
 
   const UserModel(
@@ -23,6 +24,7 @@ class UserModel {
       this.nbFollowers,
       this.nbFollowing,
       this.likes,
+      this.lastPosted,
       this.lastactivity});
 
   factory UserModel.fromMap(Map data) {
@@ -36,6 +38,7 @@ class UserModel {
         nbFollowers: data['nbFollowers'] ?? 0,
         nbFollowing: data['nbFollowing'] ?? 0,
         likes: data['likes'] ?? 0,
+        lastPosted: data['lastPosted'] ?? Timestamp.now(),
         lastactivity: data['lastActivity'] ?? Timestamp.now());
   }
 }

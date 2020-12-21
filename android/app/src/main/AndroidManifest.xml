@@ -7,8 +7,8 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="one_pic"
-        android:icon="@mipmap/ic_launcher">
+        android:label="OneLit"
+        android:icon="@mipmap/ic_onelit">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

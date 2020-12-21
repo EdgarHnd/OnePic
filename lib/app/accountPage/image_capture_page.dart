@@ -177,7 +177,7 @@ class _ImageCaptureState extends State<ImageCapture> {
               children: [
                 Text('Wait mate..'),
                 CircularProgressIndicator(
-                  backgroundColor: AppColors.purple,
+                  backgroundColor: Colors.white,
                 )
               ],
             ),

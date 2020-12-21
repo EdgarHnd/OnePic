@@ -133,3 +133,37 @@ class CurrentOnesCollection<T> {
             .toList()); //added toList
   }
 }
+
+class FollowingUsersCollection<T> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final String path;
+  CollectionReference ref;
+
+  FollowingUsersCollection({this.path}) {
+    ref = _db.collection(path);
+  }
+
+  Future<List<T>> getData() async {
+    var snapshots = await ref.get();
+    return snapshots.docs
+        .map((doc) => Global.models[T](doc.data()) as T)
+        .toList();
+  }
+
+  Stream<List<T>> streamData() {
+    return _auth.authStateChanges().switchMap((user) {
+      if (user != null) {
+        return ref
+            .orderBy('lastPosted', descending: true)
+            .where('followers', arrayContains: user.uid)
+            .snapshots()
+            .map((list) => list.docs
+                .map((doc) => Global.models[T](doc.data()) as T)
+                .toList()); //added toList
+      } else {
+        return Stream<List<T>>.value(null);
+      }
+    });
+  }
+}

@@ -40,7 +40,8 @@ class HomePage extends HookWidget {
     }
     return Scaffold(
         appBar: AppBar(
-          centerTitle: true,
+          elevation: 0,
+          centerTitle: false,
           actions: [
             Padding(
               padding: EdgeInsets.only(right: 20.0),
@@ -50,7 +51,10 @@ class HomePage extends HookWidget {
               ),
             )
           ],
-          title: Hero(tag: 'logo', child: LogoText()),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: Hero(tag: 'logo', child: LogoText()),
+          ),
           backgroundColor: Colors.white,
         ),
         body: IndexedStack(
